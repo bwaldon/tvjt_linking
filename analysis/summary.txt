@@ -1,0 +1,78 @@
+[1] "Binary MaxAP values: "
+$mu_theta1
+[1] 0.08244792
+
+$sigma
+[1] 0.1435259
+
+$alpha
+[1] 4.055444
+
+$pt_prob
+[1] 0
+
+[1] "Binary Predictives Adj. R^2: "
+[1] 0.9684369
+[1] "Ternary MaxAP values: "
+$mu_theta1
+[1] 0.1001523
+
+$mu_theta2
+[1] 0.02242347
+
+$sigma
+[1] 0.08512122
+
+$alpha
+[1] 1.300418
+
+$pt_prob
+[1] 0
+
+[1] "Ternary Predictives Adj. R^2: "
+[1] 0.9773238
+[1] "Quaternary MaxAP values: "
+$mu_theta1
+[1] 0.2442011
+
+$mu_theta2
+[1] 0.100979
+
+$mu_theta3
+[1] 0.05109442
+
+$sigma
+[1] 0.1745647
+
+$alpha
+[1] 5.362482
+
+$pt_prob
+[1] 0.7750522
+
+[1] "Quaternary Predictives Adj. R^2: "
+[1] 0.930701
+[1] "Quinary MaxAP values: "
+$mu_theta1
+[1] 0.2072509
+
+$mu_theta2
+[1] 0.01143849
+
+$mu_theta3
+[1] 0.009121147
+
+$mu_theta4
+[1] 0.004951945
+
+$sigma
+[1] 0.2258003
+
+$alpha
+[1] 5.432963
+
+$pt_prob
+[1] 0.4591076
+
+[1] "Quinary Predictives Adj. R^2: "
+[1] 0.8947717
