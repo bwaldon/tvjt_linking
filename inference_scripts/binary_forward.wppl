@@ -1,0 +1,152 @@
+var prod_data = [{"card_type":"X","guess_type":"X","nright":148,"nwrong":2,"total":150,"observed_right":0.9867,"observed_wrong":0.0133},{"card_type":"X","guess_type":"XandY","nright":10,"nwrong":140,"total":150,"observed_right":0.0667,"observed_wrong":0.9333},{"card_type":"X","guess_type":"XorY","nright":145,"nwrong":5,"total":150,"observed_right":0.9667,"observed_wrong":0.0333},{"card_type":"X","guess_type":"Z","nright":1,"nwrong":149,"total":150,"observed_right":0.0067,"observed_wrong":0.9933},{"card_type":"XY","guess_type":"X","nright":129,"nwrong":21,"total":150,"observed_right":0.86,"observed_wrong":0.14},{"card_type":"XY","guess_type":"XandY","nright":150,"nwrong":0,"total":150,"observed_right":1,"observed_wrong":0},{"card_type":"XY","guess_type":"XorY","nright":93,"nwrong":57,"total":150,"observed_right":0.62,"observed_wrong":0.38},{"card_type":"XY","guess_type":"Z","nright":1,"nwrong":149,"total":150,"observed_right":0.0067,"observed_wrong":0.9933}]; 
+
+var modes = json.read('analysis/inference_results/binary_parameter_modes.json')[0]
+
+var resultsfileName = 'analysis/inference_results/binary_predictions.json'
+
+var predictive_method = "forward"
+
+var predictive_samples = 5000
+
+var cost = 1
+
+var card_types = ['X', 'Y', 'Z', 'XY', 'XZ', 'YZ'];
+var guess_types = ['X', 'Y', 'XorY', 'XandY', 'Z'];
+
+var cardPrior = function() {
+  return uniformDraw(card_types)
+};
+
+var guessPrior = function() {
+  return uniformDraw(guess_types);
+};
+
+// literalMeanings: the sentence is true according to the truth conditions of the sentence
+
+var literalMeanings = {
+  X: function(state) { return state.includes('X'); },
+  Y: function(state) { return state.includes('Y'); },
+  Z: function(state) { return state.includes('Z'); },
+  XorY: function(state) { return state.includes('X') || state.includes('Y'); },
+  XandY: function(state) { return state.includes('X') && state.includes('Y'); },
+  XorZ: function(state) { return state.includes('X') || state.includes('Z'); },
+  XandZ: function(state) { return state.includes('X') && state.includes('Z'); },
+  YorZ: function(state) { return state.includes('Y') || state.includes('Z'); },
+  YandZ: function(state) { return state.includes('Y') && state.includes('Z'); },
+  XorYorZ: function(state) { return state.includes('X') || state.includes('Y') || state.includes('Z'); },
+  XandYandZ: function(state) { return state.includes('X') && state.includes('Y') && state.includes('Z'); },
+};
+
+
+var followsthat = function(exp1, exp2) {
+  var f = literalMeanings[exp1]
+  var g = literalMeanings[exp2]
+  var m = function() {
+    var s = cardPrior()
+    //add the desired assumption:
+    condition(f(s))
+    return {'follows': g(s)}
+  };
+  var dist = Infer({}, m)
+  return dist 
+};
+
+var standardEvaluate = function (s) {
+  var f = literalMeanings[s]
+  return function (state) {
+      return f(state)
+  }
+}
+
+var sometimesTrue = cache(function(u) {
+  // distribution of worlds in which u is true
+  var worldDist = Infer({model: function() {
+    var s = cardPrior()
+    condition(standardEvaluate(u)(s))
+    return s
+  }}) 
+  // distribution of utterances we a priori expect given we are in a u world
+  var uttDist = Infer({model: function() {
+    var s = sample(worldDist)
+    var utt = guessPrior()
+    condition(standardEvaluate(utt)(s))
+    return utt
+  }}) 
+  var dist = Infer({model: function () {
+    var utt = sample(uttDist)
+    condition(Math.exp(followsthat(u, utt).score({"follows": true})) == 1 || Math.exp(followsthat(utt, u).score({"follows": true})) == 1)
+    return utt
+  }})
+  return dist
+})
+
+//literalListener
+
+var literalListener = cache(function(utt) {
+  return Infer({model: function(){
+    var state = cardPrior()
+    var meaning = standardEvaluate(utt)
+    condition(meaning(state))
+    return state
+  }})
+})
+
+// pragmatic speaker
+var speaker = cache(function(state,alpha,pt_prob) {
+  return Infer({model: function(){
+    var utt = guessPrior()
+    factor(alpha * literalListener(utt).score(state))
+    return flip(pt_prob) ? sample(sometimesTrue(utt)) : utt;
+  }})
+})
+
+var threshold = function(card,theta,alpha,pt_prob) {
+  var supported_guesses_string = speaker(card,alpha,pt_prob).support().toString();
+  var supported_guesses = supported_guesses_string.split(',');
+  return filter(function(x) { return Math.exp(speaker(card,alpha).score(x)) > theta; }, supported_guesses)
+}
+ 
+var responder = function(guess,card,theta_means,sigma,alpha,pt_prob) {
+  return Infer({model:function(){
+  if (flip(responder_noise)) {
+    return uniformDraw(["Right","Wrong"]);
+  } 
+	var theta1 = sample(ndGaussian(theta_means[0], sigma, discrete_binsize))
+//  var theta1 = sample(discreteGaussian({mu: theta_means[0], sigma: sigma, binsize : discrete_binsize}))
+  condition(1 > theta1 > 0)
+  if (threshold(card,theta1,alpha,pt_prob).includes(guess)) {return "Right"; } 
+  else { return "Wrong"; }
+}, method: responder_method,
+ samples: responder_samples
+})}
+
+var model_posterior = function (item) {
+ 
+var theta_means = [modes.mu_theta1]
+var sigma = modes.sigma
+var alpha = modes.alpha
+var pt_prob = 0
+
+return Infer({model:function(){
+  var theta1 = sample(Gaussian({mu: theta_means[0], sigma: sigma}))
+  if (threshold(item.card_type,theta1,alpha,pt_prob).includes(item.guess_type)) {return "Right"; } 
+  else { return "Wrong"; }
+}, 
+              method: predictive_method, 
+              samples : predictive_samples
+             })
+
+}
+
+var predictions = map(function(d) { 
+  var post = model_posterior(d)
+  return { 
+    card_type: d.card_type,
+    guess_type: d.guess_type,
+    predicted_right: Math.exp(post.score("Right")),
+    predicted_wrong: Math.exp(post.score("Wrong"))} }, 
+                      prod_data)
+
+var out = {predictions: predictions}
+
+json.write(resultsfileName, out)

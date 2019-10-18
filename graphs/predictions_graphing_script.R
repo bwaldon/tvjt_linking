@@ -62,10 +62,10 @@ reformat <- function(d, condition) {
 
 # LOAD INFERENCE RESULTS
 
-binary_inference <- reformat(fromJSON("../analysis/inference_results/binary.json"), "binary")
-ternary_inference <- reformat(fromJSON("../analysis/inference_results/tertiary.json"), "ternary")
-quaternary_inference <- reformat(fromJSON("../analysis/inference_results/quaternary.json"), "quaternary")
-quinary_inference <- reformat(fromJSON("../analysis/inference_results/quinary.json"), "quaternary")
+binary_inference <- reformat(fromJSON("../analysis/inference_results/binary_predictions.json"), "binary")
+ternary_inference <- reformat(fromJSON("../analysis/inference_results/ternary_predictions.json"), "ternary")
+quaternary_inference <- reformat(fromJSON("../analysis/inference_results/quaternary_predictions.json"), "quaternary")
+quinary_inference <- reformat(fromJSON("../analysis/inference_results/quinary_predictions.json"), "quaternary")
 
 # BINARY GRAPH
 
@@ -174,7 +174,7 @@ binary_plot<-
   binary_summary_m %>%
   ggplot(aes(x=response, y=proportion, fill=condition, alpha=source)) +
   geom_bar(stat = "identity", position="dodge",width=0.6,color="gray60") +
-  ggtitle(expression(paste("Binary condition (Adj. ", R^2, "= 0.968)"))) +
+  ggtitle(expression(paste("Binary condition (Adj. ", R^2, "= 0.966)"))) +
   facet_grid(card_type~guess_type) +
   labs(x=NULL, y="Proportion of response")+
   theme_few() +
@@ -303,7 +303,7 @@ ternary_summary_m = ternary_summary_m %>%
 ternary_plot<-
   ternary_summary_m %>%
   ggplot(aes(x=response, y=proportion, fill=condition, alpha=source)) +
-  ggtitle(expression(paste("Ternary condition (Adj. ", R^2, "= 0.977)"))) +
+  ggtitle(expression(paste("Ternary condition (Adj. ", R^2, "= 0.967)"))) +
   geom_bar(stat = "identity", position="dodge",width=0.6,color="gray60") +
   scale_y_continuous(breaks=NULL) +
   facet_grid(card_type~guess_type) +
@@ -439,7 +439,7 @@ quaternary_plot<-
   geom_bar(stat = "identity", position="dodge",width=0.6,color="gray60") +
   facet_grid(card_type~guess_type) +
   labs(x=NULL, y="Proportion of response")+
-  ggtitle(expression(paste("Quaternary condition (Adj. ", R^2, "= 0.931)"))) +
+  ggtitle(expression(paste("Quaternary condition (Adj. ", R^2, "= 0.928)"))) +
   theme_few() +
   theme(text = element_text(size=12)) +
   # scale_fill_manual(values = c("blue4"), guide=FALSE) +
@@ -570,7 +570,7 @@ quinary_plot<-
   quinary_summary_m %>%
   ggplot(aes(x=response, y=proportion, fill=condition, alpha=source)) +
   geom_bar(stat = "identity", position="dodge",width=0.6,color="gray60") +
-  ggtitle(expression(paste("Quinary condition (Adj. ", R^2, "= 0.895)"))) +
+  ggtitle(expression(paste("Quinary condition (Adj. ", R^2, "= 0.907)"))) +
   facet_grid(card_type~guess_type) +
   scale_y_continuous(breaks=NULL) +
   labs(x=NULL, y=NULL)+

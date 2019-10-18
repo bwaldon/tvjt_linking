@@ -1,78 +1,16 @@
-[1] "Binary MaxAP values: "
-$mu_theta1
-[1] 0.08244792
-
-$sigma
-[1] 0.1435259
-
-$alpha
-[1] 4.055444
-
-$pt_prob
-[1] 0
-
+[1] "Binary Parameter Estimates: "
+[{"alpha":1.219,"mu_theta1":0.0728,"sigma":0.1254}] 
 [1] "Binary Predictives Adj. R^2: "
-[1] 0.9684369
-[1] "Ternary MaxAP values: "
-$mu_theta1
-[1] 0.1001523
-
-$mu_theta2
-[1] 0.02242347
-
-$sigma
-[1] 0.08512122
-
-$alpha
-[1] 1.300418
-
-$pt_prob
-[1] 0
-
+[1] 0.9657978
+[1] "Ternary Parameter Estimates: "
+[{"alpha":1.3823,"mu_theta1":0.0612,"mu_theta2":0.0105,"sigma":0.076}] 
 [1] "Ternary Predictives Adj. R^2: "
-[1] 0.9773238
-[1] "Quaternary MaxAP values: "
-$mu_theta1
-[1] 0.2442011
-
-$mu_theta2
-[1] 0.100979
-
-$mu_theta3
-[1] 0.05109442
-
-$sigma
-[1] 0.1745647
-
-$alpha
-[1] 5.362482
-
-$pt_prob
-[1] 0.7750522
-
+[1] 0.967391
+[1] "Quaternary Parameter Estimates: "
+[{"alpha":2.7522,"mu_theta1":0.2773,"mu_theta2":0.1013,"mu_theta3":0.0484,"pt_prob":0.7967,"sigma":0.1585}] 
 [1] "Quaternary Predictives Adj. R^2: "
-[1] 0.930701
-[1] "Quinary MaxAP values: "
-$mu_theta1
-[1] 0.2072509
-
-$mu_theta2
-[1] 0.01143849
-
-$mu_theta3
-[1] 0.009121147
-
-$mu_theta4
-[1] 0.004951945
-
-$sigma
-[1] 0.2258003
-
-$alpha
-[1] 5.432963
-
-$pt_prob
-[1] 0.4591076
-
+[1] 0.9281608
+[1] "Quinary Parameter Estimates: "
+[{"alpha":4.3831,"mu_theta1":0.184,"mu_theta2":0.0421,"mu_theta3":0.005,"mu_theta4":0.002,"pt_prob":0.4369,"sigma":0.0985}] 
 [1] "Quinary Predictives Adj. R^2: "
-[1] 0.8947717
+[1] 0.9074571
